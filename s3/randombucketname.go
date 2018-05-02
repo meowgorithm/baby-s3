@@ -24,9 +24,11 @@ func stringWithCharset(length int, charset string) string {
 	return string(b)
 }
 
-// RandomBucketName creates a random string of a given length. Don't worry about
-// the overhead of the extra function call here; Go will inline it during
-// compilation.
-func RandomBucketName(length int) string {
-	return stringWithCharset(length, charset)
+// RandomBucketName creates a random string valid for AWS bucket names. Note
+// that bucket names must be between 3 and 63 characters. Here, we're doing it
+// 32 characters in length, because 32 is a cool number.
+func RandomBucketName() string {
+	// Don't worry about the overhead of the extra function call here; Go will
+	// inline it during compilation.
+	return stringWithCharset(32, charset)
 }

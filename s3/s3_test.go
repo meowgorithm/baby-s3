@@ -18,7 +18,7 @@ func TestNewSession(t *testing.T) {
 
 func TestAllTheS3Stuff(t *testing.T) {
 
-	bucketName := RandomBucketName(32)
+	bucketName := RandomBucketName()
 
 	t.Run("test create bucket", func(t *testing.T) {
 		if err := CreateBucket(bucketName); err != nil {
