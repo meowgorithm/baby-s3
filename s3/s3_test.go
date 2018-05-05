@@ -22,37 +22,48 @@ func TestAllTheS3Stuff(t *testing.T) {
 
 	t.Run("test create bucket", func(t *testing.T) {
 		if err := CreateBucket(bucketName); err != nil {
-			t.Errorf("error creating bucket named %s: %s\n", bucketName, err.Error())
+			t.Errorf("error creating bucket named %s: %s\n", bucketName, err)
 		}
 	})
 
 	t.Run("test make bucket public", func(t *testing.T) {
 		if err := MakeBucketPublic(bucketName); err != nil {
-			t.Errorf("error creating bucket named %s: %s\n", bucketName, err.Error())
+			t.Errorf("error creating bucket named %s: %s\n", bucketName, err)
 		}
 	})
 
-	// Also testing that we can put stuff in a subdirectory
-	filename := "pixels/pixel.png"
+	textFilename := "meow.txt"
 
-	// This also tests `Upload()` since `UploadBase64()` is just a wrapper
-	// around `Upload()`
-	t.Run("test upload file", func(t *testing.T) {
-		if err := UploadBase64Object(bucketName, filename, pixelBase64Data); err != nil {
-			t.Error("error uploading to S3", err.Error())
+	t.Run("test upload file as bytes", func(t *testing.T) {
+		err := UploadObject(bucketName, textFilename, []byte("here, kitty kitty"))
+		if err != nil {
+			t.Error("couldn't upload bytes", err)
 		}
 	})
 
-	t.Run("test delete file", func(t *testing.T) {
-		if err := DeleteObject(bucketName, filename); err != nil {
-			t.Error("error deleting from S3", err.Error())
+	// Also testing that we can put stuff in a "directory"
+	imageFilename := "pixels/pixel.png"
+
+	t.Run("test upload file as base 64", func(t *testing.T) {
+		if err := UploadBase64Object(bucketName, imageFilename, pixelBase64Data); err != nil {
+			t.Error("error uploading to S3", err)
+		}
+	})
+
+	t.Run("test delete files", func(t *testing.T) {
+		if err := DeleteObject(bucketName, textFilename); err != nil {
+			t.Error("error deleting text file from S3", err)
+			return
+		}
+		if err := DeleteObject(bucketName, imageFilename); err != nil {
+			t.Error("error deleting image from S3", err)
 			return
 		}
 	})
 
 	t.Run("test delete bucket", func(t *testing.T) {
 		if err := DeleteBucket(bucketName); err != nil {
-			t.Errorf("error deleting bucket named %s: %s\n", bucketName, err.Error())
+			t.Errorf("error deleting bucket named %s: %s\n", bucketName, err)
 		}
 	})
 }
