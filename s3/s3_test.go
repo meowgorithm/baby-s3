@@ -26,6 +26,12 @@ func TestAllTheS3Stuff(t *testing.T) {
 		}
 	})
 
+	t.Run("test make bucket public", func(t *testing.T) {
+		if err := MakeBucketPublic(bucketName); err != nil {
+			t.Errorf("error creating bucket named %s: %s\n", bucketName, err.Error())
+		}
+	})
+
 	// Also testing that we can put stuff in a subdirectory
 	filename := "pixels/pixel.png"
 

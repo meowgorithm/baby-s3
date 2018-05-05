@@ -4,12 +4,28 @@ import (
 	"bytes"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
+
+// A template for a generally publicly open bucket policy. Note the `%s` which
+// should be replaced by the bucket name.
+const publicReadBucketPolicy = `{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AddPerm",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::%s/*"
+        }
+    ]
+}`
 
 // AWS makes us do this before we do anything else
 func newSession() (svc *session.Session, err error) {
@@ -23,7 +39,7 @@ func newSession() (svc *session.Session, err error) {
 	})
 }
 
-// CreateBucket does exactly that
+// CreateBucket creates a new S3 bucket.
 func CreateBucket(name string) error {
 	s, err := newSession()
 	if err != nil {
@@ -41,6 +57,23 @@ func CreateBucket(name string) error {
 
 	return svc.WaitUntilBucketExists(&s3.HeadBucketInput{
 		Bucket: aws.String(name),
+	})
+
+	return err
+}
+
+// MakeBucketPublic makes a bucket publicly readable over HTTP/HTTPS
+func MakeBucketPublic(name string) error {
+	s, err := newSession()
+	if err != nil {
+		return err
+	}
+
+	svc := s3.New(s)
+
+	_, err = svc.PutBucketPolicy(&s3.PutBucketPolicyInput{
+		Bucket: aws.String(name),
+		Policy: aws.String(fmt.Sprintf(publicReadBucketPolicy, name)),
 	})
 
 	return err
