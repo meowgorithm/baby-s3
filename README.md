@@ -1,8 +1,7 @@
 Baby S3
 ========
 
-AWS is really complicated and my needs are usually not that complicated. This
-library exists to handle some common S3 operations in a simple way.
+This a simple interface to some common S3 tasks.
 
 For example:
 
@@ -32,8 +31,8 @@ have any thoughts about the API do let me know.
 
 ## AWS Keys and Regions and Stuff
 
-AWS loves it when you put stuff in environment variables, so you'll need to do
-that to work with this library. Set the following:
+AWS loves it when you put settings in environment variables, so you'll need to
+do that to work with this library. Set the following:
 
     AWS_ACCESS_KEY
     AWS_SECRET_ACCESS_KEY
