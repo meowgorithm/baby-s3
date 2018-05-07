@@ -1,4 +1,4 @@
-package s3
+package babys3
 
 import (
 	"bytes"
