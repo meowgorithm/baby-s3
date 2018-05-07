@@ -6,7 +6,7 @@ This a simple interface to some common S3 tasks.
 For example:
 
     import (
-        s3 "github.com/meowgorithm/babys3"
+        s3 "github.com/meowgorithm/baby-s3"
     )
 
     func main() {
