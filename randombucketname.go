@@ -1,4 +1,4 @@
-package s3
+package babys3
 
 // Adapted from:
 // https://www.calhoun.io/creating-random-strings-in-go/
