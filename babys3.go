@@ -118,7 +118,7 @@ func UploadObject(bucket, filename string, data []byte) (err error) {
 	return err
 }
 
-// UploadObjectAsBase64Object uploads base64 data to a given S3 bucket. It's
+// UploadObjectAsBase64 uploads base64 data to a given S3 bucket. It's
 // just a convenience function for `UploadObject()`
 func UploadObjectAsBase64(bucket, filename, base64Data string) (err error) {
 	data, err := base64.StdEncoding.DecodeString(base64Data)
