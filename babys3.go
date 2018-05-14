@@ -15,16 +15,16 @@ import (
 // A template for a generally publicly open bucket policy. Note the `%s` which
 // should be replaced by the bucket name.
 const publicReadBucketPolicy = `{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "AddPerm",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::%s/*"
-        }
-    ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "AddPerm",
+			"Effect": "Allow",
+			"Principal": "*",
+			"Action": "s3:GetObject",
+			"Resource": "arn:aws:s3:::%s/*"
+		}
+	]
 }`
 
 // AWS makes us do this before we do anything else
