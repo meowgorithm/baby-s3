@@ -8,9 +8,23 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
+
+// ObjectInfo contains information about an object. It's a simplified version
+// of `aws/aws-sdk-go/service/s3/HeadObjectOutput`.
+//
+// For info on s3.HeadObjectOutput see:
+// https://docs.aws.amazon.com/sdk-for-go/api/service/s3/#HeadObjectOutput
+type ObjectInfo struct {
+	ContentDisposition string
+	Encoding           string
+	Language           string
+	Length             string
+	MimeType           string
+}
 
 // A template for a generally publicly open bucket policy. Note the `%s` which
 // should be replaced by the bucket name.
@@ -37,6 +51,35 @@ func newSession() (svc *session.Session, err error) {
 	return session.NewSession(&aws.Config{
 		Region: aws.String(region),
 	})
+}
+
+// BucketExists determines if a given bucket exists
+func BucketExists(name string) (bool, error) {
+	s, err := newSession()
+	if err != nil {
+		return false, err
+	}
+
+	svc := s3.New(s)
+
+	_, err = svc.HeadBucket(&s3.HeadBucketInput{
+		Bucket: aws.String(name),
+	})
+
+	if err != nil {
+		if aErr, ok := err.(awserr.Error); ok {
+			switch aErr.Code() {
+			case s3.ErrCodeNoSuchBucket:
+				return false, nil
+			default:
+				return false, aErr
+			}
+		} else {
+			return false, err
+		}
+		return false, err
+	}
+	return true, nil
 }
 
 // CreateBucket creates a new S3 bucket.
@@ -98,6 +141,30 @@ func DeleteBucket(name string) error {
 	return svc.WaitUntilBucketNotExists(&s3.HeadBucketInput{
 		Bucket: aws.String(name),
 	})
+}
+
+// HeadObject fetches simple information about ab object without actually
+// fetching the object
+func HeadObject(bucket, filename string) (*s3.HeadObjectOutput, error) {
+	s, err := newSession()
+	if err != nil {
+		return nil, err
+	}
+
+	svc := s3.New(s)
+
+	return svc.HeadObject(&s3.HeadObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(filename),
+	})
+}
+
+// ObjectExists returns true if the object exists on S3, and false if not
+func ObjectExists(bucket, filename string) bool {
+	if _, err := HeadObject(bucket, filename); err != nil {
+		return false
+	}
+	return true
 }
 
 // UploadObject uploads a given file to an S3 bucket

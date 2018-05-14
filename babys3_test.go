@@ -20,6 +20,12 @@ func TestAllTheS3Stuff(t *testing.T) {
 
 	bucketName := RandomBucketName()
 
+	t.Run("eh", func(t *testing.T) {
+		if _, err := HeadObject(bucketName, "eh"); err != nil {
+			t.Errorf("wut %s\n", err)
+		}
+	})
+
 	t.Run("test create bucket", func(t *testing.T) {
 		if err := CreateBucket(bucketName); err != nil {
 			t.Errorf("error creating bucket named %s: %s\n", bucketName, err)
