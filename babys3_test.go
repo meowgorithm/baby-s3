@@ -45,7 +45,7 @@ func TestAllTheS3Stuff(t *testing.T) {
 	imageFilename := "pixels/pixel.png"
 
 	t.Run("test upload file as base 64", func(t *testing.T) {
-		if err := UploadBase64Object(bucketName, imageFilename, pixelBase64Data); err != nil {
+		if err := UploadObjectAsBase64(bucketName, imageFilename, pixelBase64Data); err != nil {
 			t.Error("error uploading to S3", err)
 		}
 	})
