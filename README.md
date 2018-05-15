@@ -39,3 +39,9 @@ do that to work with this library. Set the following:
     AWS_ACCESS_KEY
     AWS_SECRET_ACCESS_KEY
     AWS_REGION
+
+## Dependencies
+
+This only dependency of this library is `github.com/aws/aws-sdk-go`. More
+details can be found in `Gopkg.toml`. If you use `dep` to manage your
+dependencies the AWS SDK will be installed automatically.
