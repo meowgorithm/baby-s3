@@ -62,6 +62,14 @@ func TestObjectOperations(t *testing.T) {
 		}
 	})
 
+	t.Run("test object does not exist", func(t *testing.T) {
+		if exists, err := ObjectExists(bucketName, "pretend-file.txt"); err != nil {
+			t.Error("could not check if object exists", err)
+		} else if exists {
+			t.Error("a nonexistant object was reported as existing when it should not have")
+		}
+	})
+
 	t.Run("test head object", func(t *testing.T) {
 		var (
 			info *s3.HeadObjectOutput

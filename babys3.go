@@ -149,6 +149,7 @@ func DeleteBucket(name string) error {
 // For information on what exactly is returned see:
 // https://docs.aws.amazon.com/sdk-for-go/api/service/s3/#HeadObjectOutput
 func HeadObject(bucket, filename string) (*s3.HeadObjectOutput, error) {
+
 	svc, err := newSession()
 	if err != nil {
 		return nil, err
@@ -158,20 +159,39 @@ func HeadObject(bucket, filename string) (*s3.HeadObjectOutput, error) {
 		Bucket: aws.String(bucket),
 		Key:    aws.String(filename),
 	})
+
 	if err != nil {
 		return nil, err
 	} else if h == nil {
 		return nil, fmt.Errorf("received no error, but also recieved no information about the object '%s' in bucket '%s'",
 			filename, bucket)
 	}
+
 	return h, err
 }
 
 // ObjectExists returns true if the object exists on S3, and false if not
 func ObjectExists(bucket, filename string) (exists bool, err error) {
-	if _, err := HeadObject(bucket, filename); err != nil {
+	_, err = HeadObject(bucket, filename)
+
+	if err != nil {
+		if awsErr, ok := err.(awserr.Error); ok {
+			switch awsErr.Code() {
+			case s3.ErrCodeNoSuchKey:
+				// Object doesn't exist. No error.
+				return false, nil
+			case "NotFound":
+				// AWS might also return this?
+				return false, nil
+			default:
+				return false, err
+			}
+		}
+		// This should never happen
 		return false, err
 	}
+
+	// No error: object exists
 	return true, nil
 }
 
