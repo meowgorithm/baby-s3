@@ -11,6 +11,15 @@ const (
 	pixelBase64Data = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
 )
 
+func TestGetMimeType(t *testing.T) {
+	f := "hello.txt"
+	mt := getMimeTypeFromFilename(f)
+	expect := "text/plain; charset=utf-8"
+	if mt != expect {
+		t.Errorf("could not get mime type from filename. expected '%s', got '%s'\n", expect, mt)
+	}
+}
+
 func TestNewSession(t *testing.T) {
 	_, err := newSession()
 	if err != nil {

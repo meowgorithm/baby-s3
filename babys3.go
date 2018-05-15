@@ -5,7 +5,9 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"mime"
 	"os"
+	"path/filepath"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -202,11 +204,19 @@ func UploadObject(bucket, filename string, data []byte) (err error) {
 		return err
 	}
 
-	_, err = svc.PutObject(&s3.PutObjectInput{
+	i := &s3.PutObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(filename),
 		Body:   bytes.NewReader(data),
-	})
+	}
+
+	// If we can determine the mime type from the filename, let S3 know
+	m := getMimeTypeFromFilename(filename)
+	if m != "" {
+		i.SetContentType(m)
+	}
+
+	_, err = svc.PutObject(i)
 
 	return err
 }
@@ -234,4 +244,8 @@ func DeleteObject(bucket, filename string) error {
 	}
 	_, err = svc.DeleteObject(&deleteInput)
 	return err
+}
+
+func getMimeTypeFromFilename(filename string) (mimeType string) {
+	return mime.TypeByExtension(filepath.Ext(filename))
 }
