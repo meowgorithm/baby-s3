@@ -31,6 +31,7 @@ func main() {
 ⚠️ For now, this library is in an alpha state and the API could change. If you
 have any thoughts about the API do let me know.
 
+
 ## AWS Keys and Regions and Stuff
 
 AWS loves it when you put settings in environment variables, so you'll need to
@@ -40,8 +41,14 @@ do that to work with this library. Set the following:
     AWS_SECRET_ACCESS_KEY
     AWS_REGION
 
+
 ## Dependencies
 
 This only dependency of this library is `github.com/aws/aws-sdk-go`. More
 details can be found in `Gopkg.toml`. If you use `dep` to manage your
 dependencies the AWS SDK will be installed automatically.
+
+
+## License
+
+MIT
