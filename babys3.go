@@ -145,7 +145,7 @@ func DeleteBucket(name string) error {
 	})
 }
 
-// HeadObject fetches simple information about ab object without actually
+// HeadObject fetches simple information about about an object without actually
 // fetching the object.
 //
 // For information on what exactly is returned see:
