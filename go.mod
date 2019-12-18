@@ -1,4 +1,4 @@
-module github.com/magicnumbers/baby-s3
+module github.com/meowgorithm/baby-s3
 
 require (
 	github.com/aws/aws-sdk-go v1.26.4
